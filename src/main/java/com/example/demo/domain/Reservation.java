@@ -3,35 +3,45 @@ package com.example.demo.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "reservations")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation extends BaseEntity{
+public class Reservation {
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "restaurant_id", referencedColumnName = "id")
-    Restaurant restaurant;
+    @Id
+    @Type(type = "uuid-char")
+    private UUID id;
 
-    @Column(name = "date_time", nullable = false)
-    LocalDateTime dateTime;
+    @Column(name = "user_id", nullable = false)
+    @Type(type = "uuid-char")
+    private UUID userId;
 
-    @Column(name = "number_of_people", nullable = false)
-    int numberOfPeople;
+    @Column(name = "start_time", nullable = false)
+    private LocalDateTime startTime;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_id", referencedColumnName = "id")
-    TableUnit tableUnit;
+    @Column(name = "end_time", nullable = false)
+    private LocalDateTime endTime;
+
+    @Column(name = "capacity", nullable = false)
+    private int capacity;
+
+    @Column(name = "restaurant_id", nullable = false)
+    @Type(type = "uuid-char")
+    private UUID restaurantId;
+
+    @Column(name = "table_id", nullable = false)
+    @Type(type = "uuid-char")
+    private UUID tableId;
 
 }

@@ -1,6 +1,7 @@
 package com.example.demo.repository.table;
 
 import com.example.demo.domain.TableUnit;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -16,4 +17,9 @@ public interface TableUnitRepository extends CrudRepository<TableUnit, UUID> {
     void deleteById(UUID id);
 
     TableUnit save(TableUnit tableUnit);
+
+//    @Query("SELECT t FROM TableUnit t LEFT OUTER JOIN t.restaurants r ON r.name = :name")
+////    Query("SELECT r FROM Restaurant r LEFT OUTER JOIN r.tables t ON t.capacity = ?1")
+//    List<TableUnit> getTableIdsByRestaurantName(String name);
+
 }

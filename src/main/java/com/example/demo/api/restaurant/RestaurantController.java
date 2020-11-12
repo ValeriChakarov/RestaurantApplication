@@ -1,9 +1,10 @@
 package com.example.demo.api.restaurant;
 
+import com.example.demo.api.restaurant.responseEntity.AddNewRestaurantResponse;
 import com.example.demo.domain.Restaurant;
 import com.example.demo.domain.TableUnit;
+import com.example.demo.services.reservation.ReservationService;
 import com.example.demo.services.restaurant.RestaurantService;
-import com.example.demo.services.table.TableUnitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +12,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -28,7 +29,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @Autowired
-    private final TableUnitService tableUnitService;
+    private final ReservationService reservationService;
 
     @GetMapping("/allRestaurants")
     public ResponseEntity<List<Restaurant>> fetchAllRestaurants() {
@@ -36,8 +37,8 @@ public class RestaurantController {
     }
 
     @PostMapping("/addRestaurant")
-    public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant newRestaurant) {
-        return ResponseEntity.ok(restaurantService.addNewRestaurant(newRestaurant));
+    public ResponseEntity<Restaurant> createRestaurant(@RequestParam String name, String address, String phoneNumber) {
+        return ResponseEntity.ok(restaurantService.addNewRestaurant(name, address, phoneNumber));
     }
 
     @GetMapping("/{id}")
@@ -46,19 +47,36 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<Restaurant> fetchRestaurantByName(@RequestParam String name) {
+    public ResponseEntity<Optional<Restaurant>> fetchRestaurantByName(@RequestParam String name) {
         return ResponseEntity.ok(restaurantService.getRestaurantsByName(name));
     }
 
     @DeleteMapping("/delete/{id}")
     public void createRestaurant(@PathVariable UUID id) {
-        restaurantService.removeRestaurant(id);
+        restaurantService.removeRestaurantById(id);
+    }
+
+    @PostMapping("/addNewRestaurantWithTables")
+    public ResponseEntity<AddNewRestaurantResponse> createRestaurantWithTables(@RequestParam String name, @RequestParam String address, @RequestParam String phoneNumber) {
+        return ResponseEntity.ok(restaurantService.addNewRestaurantWithTables(name, address, phoneNumber));
     }
 
     @PostMapping("/addTable")
-    public TableUnit createTable(@RequestBody TableUnit newTableUnit) {
-        tableUnitService.addNewTable(newTableUnit);
-        return newTableUnit;
+    public ResponseEntity<TableUnit> addTable(@RequestParam int capacity, @RequestParam UUID restaurantId) {
+        return ResponseEntity.ok(restaurantService.addNewTable(capacity, restaurantId));
     }
 
+    @GetMapping("/tablesByCapacityAndTime")
+    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityAndDate(@RequestParam int capacity,@RequestParam String dateTime) {
+        return ResponseEntity.ok(reservationService.getTablesByCapacityAndDate(capacity, dateTime));
+    }
+    @GetMapping("/talbesByCapacityTimeAndResName")
+    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityDateTimeRestaurantName(@RequestParam int capacity, @RequestParam String dateTime, @RequestParam String restaurantMame) {
+        return ResponseEntity.ok(reservationService.getTablesByCapacityDateTimeAndRestaurant(capacity, dateTime, restaurantMame));
+    }
+
+    @GetMapping("/tablesBySeatingCapcity")
+    public ResponseEntity<List<TableUnit>> fetchTablesBySeatingCapacity(@RequestParam int capacity) {
+        return ResponseEntity.ok(reservationService.getTablesAndRestaurantsByCapacity(capacity));
+    }
 }

@@ -3,29 +3,29 @@ package com.example.demo.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
-@Table(name = "tables")
+@Table(name = "tableunits")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TableUnit extends BaseEntity {
+public class TableUnit {
+
+    @Id
+    @Type(type = "uuid-char")
+    private UUID id;
 
     @Column(name = "capacity", nullable = false)
     int capacity;
 
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id", referencedColumnName = "id", nullable = false)
-    Restaurant restaurant;
-
-    @OneToOne(mappedBy = "tableUnit")
-    Reservation reservation;
+    @Column(name = "restaurant_id", nullable = false)
+    @Type(type = "uuid-char")
+    UUID restaurantId;
 }
