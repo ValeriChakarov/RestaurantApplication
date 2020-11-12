@@ -3,6 +3,7 @@ package com.example.demo.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;

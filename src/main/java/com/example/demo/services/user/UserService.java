@@ -17,7 +17,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public List<User> getAllUser() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -30,22 +30,15 @@ public class UserService {
     }
 
     public User createUser(String firstName, String lastName, String phoneNumber, String email){
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
+        User user = new User(UUID.randomUUID(), firstName,lastName,email,phoneNumber);
         return saveUser(user);
     }
 
-    @Transactional
     public User saveUser(User user) {
         return userRepository.save(user);
     }
 
     public void deleteUser(UUID id) {
-        Optional<User> user = userRepository.findById(id);
-        userRepository.delete(user.get());
+        userRepository.deleteById(id);
     }
 }

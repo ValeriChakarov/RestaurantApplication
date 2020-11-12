@@ -45,8 +45,8 @@ public class RestaurantService {
         return restaurantRepository.findById(id).orElseThrow(() -> new RuntimeException("Restaurant id cannot be found."));
     }
 
-    public Optional<Restaurant> getRestaurantsByName(String name) {
-        return restaurantRepository.findByName(name);
+    public Restaurant getRestaurantsByName(String name) {
+        return restaurantRepository.findByName(name).orElseThrow(() -> new RuntimeException("Restaurant name cannot be found."));
     }
 
     public void removeRestaurantById(UUID id) {

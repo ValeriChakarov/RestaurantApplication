@@ -1,7 +1,7 @@
 package com.example.demo.api.reservation;
 
 import com.example.demo.domain.Reservation;
-import com.example.demo.domain.TableUnit;
+import com.example.demo.services.reservation.DateTimeFormatManager;
 import com.example.demo.services.reservation.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,16 +26,18 @@ public class ReservationController {
     @Autowired
     private final ReservationService reservationService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Reservation>> fetchAllReservations(){
+    @GetMapping("/allReservations")
+    public ResponseEntity<List<Reservation>> fetchAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Reservation> makeReservation(@RequestParam UUID userID,@RequestParam String startTime,
-                                                         @RequestParam String endTime,@RequestParam int capacity,
-                                                         @RequestParam UUID restaurantID,@RequestParam UUID tableID) {
-        return ResponseEntity.ok(reservationService.createReservation(userID, startTime, endTime, capacity, restaurantID, tableID));
+    public ResponseEntity<Reservation> makeReservation(@RequestParam UUID userID, @RequestParam String startTime,
+                                                       @RequestParam String endTime, @RequestParam int capacity,
+                                                       @RequestParam UUID restaurantID, @RequestParam UUID tableID) {
+        Reservation reservation = reservationService.createReservation(userID, DateTimeFormatManager.getLocalDateTimeFormat(startTime),
+                DateTimeFormatManager.getLocalDateTimeFormat(endTime), capacity, restaurantID, tableID);
+        return ResponseEntity.ok(reservation);
     }
 
     @DeleteMapping("/cancel/{id}")
@@ -47,7 +47,7 @@ public class ReservationController {
 
     @PostMapping("/createWithPreferences")
     public ResponseEntity<Reservation> makeAReservationByCapacityAndDateTime(@RequestParam UUID userID, @RequestParam String startTime,
-                                                                         @RequestParam String endTime, @RequestParam int capacity) {
+                                                                             @RequestParam String endTime, @RequestParam int capacity) {
         return ResponseEntity.ok(reservationService.makeAReservationByCapacityAndDateTime(userID, startTime, endTime, capacity));
     }
 
@@ -55,7 +55,7 @@ public class ReservationController {
     @PutMapping("/amend")
     public ResponseEntity<Reservation> amendReservation(@RequestParam UUID id, @RequestParam int capacity,
                                                         @RequestParam String endTime, @RequestParam String startTime,
-                                                        @RequestParam UUID tableId, @RequestParam UUID userId, @RequestParam UUID restaurantId){
-            return ResponseEntity.ok(reservationService.amendReservation(id,capacity,endTime,startTime,tableId,userId,restaurantId));
+                                                        @RequestParam UUID tableId, @RequestParam UUID userId, @RequestParam UUID restaurantId) {
+        return ResponseEntity.ok(reservationService.amendReservation(id, capacity, endTime, startTime, tableId, userId, restaurantId));
     }
 }

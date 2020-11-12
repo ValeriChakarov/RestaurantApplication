@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,12 +27,12 @@ public class UserController {
 
     @GetMapping("/allUsers")
     public ResponseEntity<List<User>> fetchAllUsers(){
-        return ResponseEntity.ok(userService.getAllUser());
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PostMapping("/createUser")
-    public ResponseEntity<User> createUser(@RequestParam String firstName, String secondName, String email, String phoneNumber){
-        return ResponseEntity.ok(userService.createUser(firstName,secondName,email,phoneNumber));
+    @PostMapping("/create")
+    public ResponseEntity<User> createUser(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String email, @RequestParam String phoneNumber){
+        return ResponseEntity.ok(userService.createUser(firstName,lastName,email,phoneNumber));
     }
 
     @GetMapping("/{id}")
@@ -40,8 +41,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<User> fetchUserByName(@RequestParam String name) {
-        return ResponseEntity.ok(userService.getUserByName(name));
+    public ResponseEntity<User> fetchUserByName(@RequestParam String firstName) {
+        return ResponseEntity.ok(userService.getUserByName(firstName));
     }
 
     @DeleteMapping("/delete/{id}")
