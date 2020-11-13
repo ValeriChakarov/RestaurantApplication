@@ -1,4 +1,4 @@
-package com.example.demo.api.restaurant.responseEntity;//package com.example.demo.api.restaurant.responseEntity;
+package com.example.demo.api.entities.restaurant;//package com.example.demo.api.controllers.restaurant.responseEntity;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

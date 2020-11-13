@@ -5,26 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "guests")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Guest {
 
     @Id
-    @Type(type="uuid-char")
-    private UUID id;
+    @Type(type = "uuid-char")
+    UUID id;
 
     @Column(name = "first_name", nullable = false)
     String firstName;
@@ -33,7 +29,7 @@ public class User {
     String lastName;
 
     @Column(name = "email", nullable = false)
-    String Email;
+    String email;
 
     @Column(name = "phone_number", nullable = false)
     String phoneNumber;

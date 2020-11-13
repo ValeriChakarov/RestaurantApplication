@@ -15,7 +15,6 @@ import java.util.UUID;
 @Repository
 public interface RestaurantRepository extends CrudRepository<Restaurant, UUID> {
 
-
     List<Restaurant> findAll();
 
     Restaurant save(Restaurant restaurant);
@@ -35,10 +34,15 @@ public interface RestaurantRepository extends CrudRepository<Restaurant, UUID> {
     @Query("SELECT r FROM Restaurant r LEFT OUTER JOIN TableUnit t ON t.capacity = ?1")
     List<TableUnit> getTablesByCapacityAndName(int capacity, String name);
 
+    @Query("SELECT t FROM TableUnit t LEFT OUTER JOIN Reservation r ON t.id = r.tableId JOIN Restaurant res ON t.restaurantId = res.id WHERE t.capacity = :capacity AND (r.endTime <= :endTime OR r.id IS NULL) AND res.name = :name")
+    List<TableUnit> getTablesByCapacityDateAndRestaurant(@Param("capacity") int capacity, @Param("endTime") LocalDateTime endTime, @Param("name") String name);
 
+    @Query("SELECT t FROM TableUnit t LEFT OUTER JOIN Reservation r ON t.id = r.tableId JOIN Restaurant res ON t.restaurantId = res.id WHERE t.capacity = :capacity AND ((r.endTime <= :endTime AND r.startTime>= :startTime) OR r.id IS NULL) AND res.name = :name ")
+    List<TableUnit> getTablesByCapacityDatTimeRangeAndRestaurant(@Param("capacity") int capacity, @Param("endTime") LocalDateTime endTime, @Param("startTime") LocalDateTime startTime, @Param("name") String name);
 
+    @Query("SELECT t FROM TableUnit t LEFT OUTER JOIN Reservation r ON t.id = r.tableId JOIN Restaurant res ON t.restaurantId = res.id WHERE ((r.endTime <= :endTime AND r.startTime>= :startTime) OR r.id IS NULL) AND res.name = :name")
+    List<TableUnit> getTablesByDateTimeRangeAndRestaurant(@Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime, @Param("name") String name);
 
-
-
-
+    @Query("SELECT t FROM TableUnit t LEFT OUTER JOIN Restaurant r ON t.restaurantId = r.id WHERE t.capacity = :capacity AND r.name = :name")
+    List<TableUnit> getTablesByCapacityAndRestaurant(@Param("capacity") int capacity, @Param("name") String name);
 }
