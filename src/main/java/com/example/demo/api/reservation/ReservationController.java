@@ -47,8 +47,8 @@ public class ReservationController {
 
     @PostMapping("/createWithPreferences")
     public ResponseEntity<Reservation> makeAReservationByCapacityAndDateTime(@RequestParam UUID userID, @RequestParam String startTime,
-                                                                             @RequestParam String endTime, @RequestParam int capacity) {
-        return ResponseEntity.ok(reservationService.makeAReservationByCapacityAndDateTime(userID, startTime, endTime, capacity));
+                                                                             @RequestParam String endTime, @RequestParam int capacity, @RequestParam String restaurantName) {
+        return ResponseEntity.ok(reservationService.makeAReservationByCapacityAndDateTime(userID, startTime, endTime, capacity,restaurantName));
     }
 
 

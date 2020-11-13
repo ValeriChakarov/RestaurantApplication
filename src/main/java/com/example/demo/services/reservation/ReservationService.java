@@ -6,6 +6,7 @@ import com.example.demo.domain.TableUnit;
 import com.example.demo.repository.reservation.ReservationRepository;
 import com.example.demo.repository.restaurant.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +44,8 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public Reservation makeAReservationByCapacityAndDateTime(UUID userId, String startTime, String endTime, int capacity) {
-        TableUnit tableUnit = getTablesByCapacityAndDate(capacity, startTime).get(0);
+    public Reservation makeAReservationByCapacityAndDateTime(UUID userId, String startTime, String endTime, int capacity, String restaurantName) {
+        TableUnit tableUnit = getTablesByCapacityDateTimeAndRestaurant(capacity, startTime,restaurantName).get(0);
         Reservation reservation = new Reservation(UUID.randomUUID(), userId, DateTimeFormatManager.getLocalDateTimeFormat(startTime),
                 DateTimeFormatManager.getLocalDateTimeFormat(endTime), capacity,
                 tableUnit.getRestaurantId(), tableUnit.getId());
@@ -52,41 +53,28 @@ public class ReservationService {
     }
 
     public Reservation amendReservation(UUID id, int capacity, String endTime, String startTime, UUID tableId, UUID userId, UUID restaurantId) {
-        Reservation reservation = new Reservation(UUID.randomUUID(), userId, DateTimeFormatManager.getLocalDateTimeFormat(startTime),
+        Reservation reservation = new Reservation(id, userId, DateTimeFormatManager.getLocalDateTimeFormat(startTime),
                 DateTimeFormatManager.getLocalDateTimeFormat(endTime), capacity,
                 restaurantId, tableId);
         return reservationRepository.save(reservation);
     }
 
-    public List<TableUnit> getTablesByCapacityDateTimeAndRestaurant(int capacity, String dateTime, String restaurantMame) {
+    public List<TableUnit> getTablesByCapacityDateTimeAndRestaurant(int capacity, String dateTime, String restaurantName) {
         return reservationRepository.getTablesByCapacityDateAndRestaurant(capacity,
-                DateTimeFormatManager.getLocalDateTimeFormat(dateTime), restaurantMame);
+                DateTimeFormatManager.getLocalDateTimeFormat(dateTime), restaurantName);
     }
 
-    public List<TableUnit> getTablesByCapacityAndDate(int capacity, String dateTime) {
-        return reservationRepository.getTablesByCapacityAndDate(capacity,
-                DateTimeFormatManager.getLocalDateTimeFormat(dateTime));
+    public List<TableUnit> getTablesByCapacityTimeRangeName(int capacity, String startTime, String endTime, String name){
+        return reservationRepository.getTablesByCapacityDatTimeRangeAndRestaurant(capacity,DateTimeFormatManager.getLocalDateTimeFormat(endTime),
+                                                                                    DateTimeFormatManager.getLocalDateTimeFormat(startTime),name);
     }
 
-    public List<TableUnit> getTablesAndRestaurantsByCapacity(int capacity) {
-        return restaurantRepository.getTablesByCapacity(capacity);
+    public List<TableUnit> getTablesByDateTimeRangeAndRestaurant(String startTime, String endTime, String name){
+        return reservationRepository.getTablesByDateTimeRangeAndRestaurant(DateTimeFormatManager.getLocalDateTimeFormat(startTime),
+                                                                            DateTimeFormatManager.getLocalDateTimeFormat(endTime),name);
     }
 
-    public List<TableUnit> getTablesByCapacityAndDateRange(int capacity, String startDateTime, String endDateTime) {
-        return reservationRepository.getTablesByCapacityAndDatTimeRange(capacity,
-                DateTimeFormatManager.getLocalDateTimeFormat(startDateTime),
-                DateTimeFormatManager.getLocalDateTimeFormat(endDateTime));
+    public List<TableUnit> getTablesByCapacityAndRestaurant(int capacity, String name){
+        return reservationRepository.getTablesByCapacityAndRestaurant(capacity,name);
     }
-
-    public List<TableUnit> getTablesByDateRange(String startDateTime, String endDateTime) {
-        return reservationRepository.getTablesByDatTimeRange(DateTimeFormatManager.getLocalDateTimeFormat(startDateTime),
-                DateTimeFormatManager.getLocalDateTimeFormat(endDateTime));
-    }
-
-//    public List<Restaurant> getRestaurantByCapacityAndDateRange(String startDateTime, String endDateTime, int capacity, String name){
-//        return reservationRepository.getRestaurantByCapacityAndDateRange(DateTimeFormatManager.getLocalDateTimeFormat(startDateTime),
-//                DateTimeFormatManager.getLocalDateTimeFormat(endDateTime), capacity, name);
-//    }
-
-
 }

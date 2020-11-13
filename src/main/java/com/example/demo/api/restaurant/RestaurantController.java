@@ -66,30 +66,25 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.addNewTable(capacity, restaurantId));
     }
 
-    @GetMapping("/tablesBySeatingCapcity")
-    public ResponseEntity<List<TableUnit>> fetchTablesBySeatingCapacity(@RequestParam int capacity) {
-        return ResponseEntity.ok(reservationService.getTablesAndRestaurantsByCapacity(capacity));
+    @GetMapping("/tablesByCapacityTimeRestaurant")
+    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityDateAndRestaurant(@RequestParam int capacity,@RequestParam String dateTime, @RequestParam String name) {
+        return ResponseEntity.ok(reservationService.getTablesByCapacityDateTimeAndRestaurant(capacity, dateTime, name));
     }
 
-    @GetMapping("/tablesByCapacityTime")
-    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityAndDate(@RequestParam int capacity,@RequestParam String dateTime) {
-        return ResponseEntity.ok(reservationService.getTablesByCapacityAndDate(capacity, dateTime));
-    }
-    @GetMapping("/tablesByCapacityTimeName")
-    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityDateTimeRestaurantName(@RequestParam int capacity, @RequestParam String dateTime, @RequestParam String restaurantMame) {
-        return ResponseEntity.ok(reservationService.getTablesByCapacityDateTimeAndRestaurant(capacity, dateTime, restaurantMame));
+    @GetMapping("/tablesByCapacityTimeRangeRestaurant")
+    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityTimeRangeRestaurantName(@RequestParam int capacity,@RequestParam String startTime,
+                                                                                        @RequestParam String endTime, @RequestParam String name) {
+        return ResponseEntity.ok(reservationService.getTablesByCapacityTimeRangeName(capacity,startTime,endTime,name));
     }
 
-    @GetMapping("/tablesByTimeRange")
-    public ResponseEntity<List<TableUnit>> fetchTablesByDateTimeRange(@RequestParam String startTime, @RequestParam String endTime) {
-        return ResponseEntity.ok(reservationService.getTablesByDateRange(startTime, endTime));
+    @GetMapping("/tablesByTimeRangeRestaurant")
+    public ResponseEntity<List<TableUnit>> fetchTablesByTimeRangeRestaurantName(@RequestParam String startTime,
+                                                                                        @RequestParam String endTime, @RequestParam String name) {
+        return ResponseEntity.ok(reservationService.getTablesByDateTimeRangeAndRestaurant(startTime,endTime,name));
+    }
+
+    @GetMapping("/tablesByCapacityRestaurant")
+    public ResponseEntity<List<TableUnit>> fetchTablesByCapacityAndRestaurantName(@RequestParam int capacity, @RequestParam String restaurantName) {
+        return ResponseEntity.ok(reservationService.getTablesByCapacityAndRestaurant(capacity,restaurantName));
     }
 }
-
-
-
-
-//    @GetMapping("/restaurantByCapacityTimeRange")
-//    public ResponseEntity<List<Restaurant>> fetchTablesBySeatingCapacityAndDateTimeRange(@RequestParam int capacity, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String name) {
-//        return ResponseEntity.ok(reservationService.getRestaurantByCapacityAndDateRange(startTime, endTime,capacity,name));
-//    }
