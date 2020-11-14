@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -55,21 +57,21 @@ public class RestaurantService {
         return tableUnitRepository.save(tableUnit);
     }
 
-    public AddNewRestaurantResponse addNewRestaurantWithTables(String name, String address, String phoneNumber) {
+    public AddNewRestaurantResponse addNewRestaurantWithTables(String name, String address, String phoneNumber) throws NoSuchAlgorithmException {
+        Random rand = SecureRandom.getInstanceStrong();
         Restaurant restaurant = new Restaurant();
         restaurant.setId(UUID.randomUUID());
         restaurant.setName(name);
         restaurant.setPhoneNumber(phoneNumber);
         restaurant.setAddress(address);
         restaurantRepository.save(restaurant);
-        Random rn = new Random();
         HashMap<Integer, UUID> tableMap = new HashMap<>();
         for (int i = 0; i < 10; i++) {
             TableUnit tableEntity = new TableUnit();
             tableEntity.setId(UUID.randomUUID());
-            tableEntity.setCapacity(rn.nextInt(10) + 1);
+            tableEntity.setCapacity(rand.nextInt(10) + 1);
             tableEntity.setRestaurantId(restaurant.getId());
-            tableMap.put(rn.nextInt(10) + 1, tableEntity.getId());
+            tableMap.put(rand.nextInt(10) + 1, tableEntity.getId());
             tableUnitRepository.save(tableEntity);
         }
         return new AddNewRestaurantResponse(name, address, phoneNumber, tableMap);
